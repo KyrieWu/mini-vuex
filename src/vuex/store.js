@@ -15,7 +15,10 @@ function installModule(store, rootState, path, module) {
 
     if (!isRoot) {
         let parentState = path.slice(0, -1).reduce((state, key) => state[key], rootState)
-        parentState[path[path.length - 1]] = module.state
+        this._withCommit(() => {
+            parentState[path[path.length - 1]] = module.state
+        })
+
     }
     // getters
     module.forEachGetter((getter, key) => {
@@ -124,6 +127,14 @@ export default class Store {
         this._withCommit(() => {
             this._state.data = newState
         })
+    }
+
+    registerModule(path, rawModule) {
+        if (typeof path == 'string') path = [path]
+
+        this._modules.register(rawModule, path)
+        installModule(this, this.state, path, this._modules.get(path))
+        resetStoreState(this, this.state)
     }
 
     install(app, injectKey) {
