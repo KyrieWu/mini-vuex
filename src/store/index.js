@@ -1,6 +1,7 @@
 import { createStore } from '../vuex'
 
 export default createStore({
+    strict: true,
     state: {
         count: 0
     },
@@ -32,6 +33,7 @@ export default createStore({
             },
             modules: {
                 cCount: {
+                    namespaced: true,
                     state: { count: 0 },
                     mutations: {
                         add(state, payload) {

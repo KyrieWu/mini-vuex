@@ -7,6 +7,13 @@
   <hr>
   <button @click="add">同步修改</button>
   <button @click="asyncAdd">异步修改</button>
+
+  <hr>
+  a模块:{{aCount}}
+  c模块:{{cCount}}
+
+  <button @click="$store.commit('aCount/add',1)">改a</button>
+  <button @click="$store.commit('aCount/cCount/add',1)">改c</button>
 </template>
 
 <script setup>
@@ -17,6 +24,8 @@ const store = useStore()
 
 let count = computed(()=>store.state.count)
 let double = computed(()=>store.getters.double)
+let aCount = computed(()=>store.state.aCount.count)
+let cCount = computed(()=>store.state.aCount.cCount.count)
 
 function add(){
   store.commit('add',1)

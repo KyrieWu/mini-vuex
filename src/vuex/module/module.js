@@ -5,6 +5,7 @@ export default class Module {
         this._raw = rawModule
         this._children = Object.create(null)
         this.state = rawModule.state
+        this.namespaced = rawModule.namespaced
     }
     // 方便扩展
     addChild(key, module) {

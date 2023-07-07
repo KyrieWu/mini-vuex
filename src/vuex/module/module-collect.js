@@ -6,11 +6,11 @@ export default class ModuleCollection {
         this.register(rootModule, [])
     }
 
-    get (path) {
+    get(path) {
         return path.reduce((module, key) => {
-          return module.getChild(key)
+            return module.getChild(key)
         }, this.root)
-      }
+    }
 
     register(rawModule, path) {
         const newModle = new Module(rawModule)
@@ -27,5 +27,13 @@ export default class ModuleCollection {
                 this.register(rawChildModule, path.concat(key))
             })
         }
+    }
+
+    getNamespaced(path) {
+        let module = this.root
+        path.reduce((namespaceStr, key) => {
+            module = module.getChild(key)
+            return namespaceStr + (module.namespaced ? key + '/' : '')
+        }, '')
     }
 }
