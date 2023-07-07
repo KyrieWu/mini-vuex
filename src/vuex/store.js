@@ -80,6 +80,7 @@ export default class Store {
         this._mutations = Object.create(null)
         this._wrappedGetters = Object.create(null)
         this._modules = new ModuleCollection(options)
+        this._subscribers = []
 
 
         this.strict = options.strict || false
@@ -92,6 +93,8 @@ export default class Store {
         // and collects all module getters inside this._wrappedGetters
         installModule(this, state, [], this._modules.root)
         resetStoreState(this, state)
+
+        options.plugins.forEach(plugin => plugin(this))
     }
 
     get state() {
@@ -103,12 +106,24 @@ export default class Store {
         this._withCommit(() => {
             entry && entry.forEach(handle => handle(payload))
         })
+        this._subscribers.forEach(sub => sub({ type, payload }, this.state))
 
     }
 
     dispatch = (type, payload) => {
         const entry = this._actions[type] || []
         return Promise.all(entry.map(handle => handle(payload)))
+    }
+
+    subscribe(fn) {
+        this._subscribers.push(fn)
+    }
+
+    replaceState(newState) {
+        // 严格模式下 不能直接修改状态
+        this._withCommit(() => {
+            this._state.data = newState
+        })
     }
 
     install(app, injectKey) {
