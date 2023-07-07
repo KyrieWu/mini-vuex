@@ -1,4 +1,4 @@
-import { Store } from './store'
+import Store from './store'
 import { useStore } from "./injectKey"
 
 //一个容器

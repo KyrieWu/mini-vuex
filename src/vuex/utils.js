@@ -6,3 +6,7 @@ export function partial(fn, arg) {
         return fn(arg)
     }
 }
+
+export function isPromise(val) {
+    return val && typeof val.then === 'function'
+}
